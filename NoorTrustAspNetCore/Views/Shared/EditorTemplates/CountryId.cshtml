@@ -1,0 +1,24 @@
+﻿@model object
+
+@(Html.Kendo().ComboBoxFor(m => m)
+
+              //  .Placeholder("Select a Country")
+              .DataTextField("Text")
+              .DataValueField("Value")
+              .HtmlAttributes(new { style = "width:148px;" })
+
+
+              .Events(ev => ev.Change("onChange_CountryId"))
+            .Filter("contains").IgnoreCase(false)
+              .AutoBind(true)
+              .MinLength(0)
+              .DataSource(source =>
+              {
+                  source.Read(read =>
+                  {
+                      read.Action("ServerFiltering_GetCountries", "Country");
+                  })
+                  .ServerFiltering(true);
+              })
+ )
+

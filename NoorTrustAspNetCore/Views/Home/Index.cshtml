@@ -1,0 +1,164 @@
+@using Kendo.Mvc.UI
+@using NoorTrust.DonationFund.WebUi.Controllers
+
+@model IEnumerable<NotificationCategory>
+
+@{
+    ViewData["Title"] = "Home Page";
+    // Layout = null;
+}
+
+
+<div class="row">
+    <div class="col-xs-4 col-md-3 placeholder">
+      
+    </div>
+    <div class="col-xs-12 col-md-9">
+ 
+        <div class="row" style="height:50px">
+
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12 col-md-4">
+                <h4>Sponsors</h4>
+                <table style="background-color:rgba(245, 245, 245, 0.30) ;  border:1px solid #aeaeae;border:1px solid rgba(126, 52, 4, 0.35);padding:20px; width:400px">
+                    <tr style="border:1px solid rgba(126, 52, 4, 0.35);padding:20px">
+                        <td align="center" style="border:1px solid rgba(126, 52, 4, 0.35);padding:20px">
+                            <p class="lead">Total</p>
+                            <b>@ViewData["ActiveSponsorsCount"] </b>
+                        </td>
+                        <td align="center" style="border:1px solid rgba(126, 52, 4, 0.35);padding:20px">
+                            <p class="lead">Have Sponsorship</p>
+                            <b>@ViewData["GetActiveSponsoredCount"] </b>
+                        </td>
+                        <td align="center" style="border:1px solid rgba(126, 52, 4, 0.35);padding:20px">
+                            <p class="lead">Pending</p>
+                            <b>@ViewData["GetActiveUnSponsoredCount"] </b>
+                        </td>
+
+                    </tr>
+                </table>
+
+            </div>
+        </div>
+        <div class="row" style="height:50px">
+
+        </div>
+
+        <div class="row">
+
+            <div class="col-xs-12 col-md-4">
+                <h4>Orphans</h4>
+                <table style="background-color:rgba(245, 245, 245, 0.30) ; border:1px solid rgba(126, 52, 4, 0.35);padding:20px; width:600px">
+                    <tr style="border:1px solid rgba(126, 52, 4, 0.35);padding:20px">
+                        <td align="center" style="border:1px solid rgba(126, 52, 4, 0.35);padding:20px">
+                            <p class="lead">Total</p>
+                            <b>@ViewData["ActiveOrphansCount"] </b>
+                        </td>
+                        <td align="center" style="border:1px solid rgba(126, 52, 4, 0.35);padding:20px">
+                            <p class="lead">Sponsored</p>
+                            <b>@ViewData["GetActiveSponsoredOrphansCount"] </b>
+                        </td>
+                        <td align="center" style="border:1px solid rgba(126, 52, 4, 0.35);padding:20px">
+                            <p class="lead">Pending</p>
+                            <b>@ViewData["GetActiveUnSponsoredOrphansCount"] </b>
+                        </td>
+
+                    </tr>
+                    <tr style="border:1px solid rgba(126, 52, 4, 0.35);padding:20px">
+                        <td align="center" style="border:1px solid rgba(126, 52, 4, 0.35);padding:20px">
+                            <p class="lead">Older than 16 years old</p>
+                            <b>@ViewData["ActiveOrphansOlderThan17Count"] </b>
+                        </td>
+                        <td align="center" style="border:1px solid rgba(126, 52, 4, 0.35);padding:20px">
+                            <p class="lead">Between 5 and 6 years old</p>
+                            <b>@ViewData["ActiveOrphansOlderThan5Count"] </b>
+                        </td>
+                        <td></td>
+                        @*<td align="center" style="border:1px solid rgba(126, 52, 4, 0.35);padding:20px"></td>*@
+
+                    </tr>
+
+                </table>
+
+            </div>
+            <div class="col-xs-12 col-md-4">
+                <p>
+
+                </p>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<style>
+
+
+    #npanelbar1 .k-link {
+        background-image: none;
+        color: #262626;
+        /*background-color: rgba(245, 245, 245, 0.30);*/
+    }
+
+    #npanelbar1 li:nth-child(1) .k-link {
+        background-color: rgba(245, 245, 0, 0.10);
+    }
+
+    #npanelbar1 li:nth-child(2) .k-link {
+        background-color: rgba(245, 245, 245, 0.20);
+    }
+
+    #npanelbar1 li:nth-child(3) .k-link {
+        background-color: rgba(245, 245, 245, 0.20);
+    }
+
+    #npanelbar1 li:nth-child(4) .k-link {
+        background-color: rgba(245, 245, 245, 0.20);
+    }
+
+    #npanelbar1 li:nth-child(5) .k-link {
+        background-color: rgba(245, 245, 245, 0.30);
+    }
+
+    #npanelbar1 li:nth-child(6) .k-link {
+        background-color: rgba(245, 245, 245, 0.30);
+    }
+
+    #npanelbar1 li:nth-child(7) .k-link {
+        background-color: #cbd1e5;
+    }
+
+    .h1 {
+        font-size: medium
+    }
+</style>
+
+
+<style>
+    ul.k-panelbar .k-link {
+        background-color: rgba(245, 245, 245, 0.30);
+        color: #fff;
+    }
+
+    ul.k-panelbar .k-link {
+        background-color: rgba(245, 245, 245, 0.30);
+        color: #fff;
+    }
+
+    ul.k-panelbar .k-link {
+        background-color: rgba(245, 245, 245, 0.30);
+        color: #fff;
+    }
+
+    ul.k-panelbar .k-link {
+        background-color: rgba(245, 245, 245, 0.30);
+        color: #fff;
+    }
+</style>
+
+
+
+<script>jQuery("#HomeMenuItem").css("color", "#f85a00");</script>

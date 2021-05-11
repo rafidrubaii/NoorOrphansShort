@@ -1,0 +1,302 @@
+@using Kendo.Mvc.UI
+@using NoorTrust.DonationFund.WebUi.Controllers
+
+@{
+    ViewData["Title"] = "Admin Page";
+     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="row">
+    <div class="col-xs-4 col-md-3 placeholder">
+        @*<img class="img-responsive" alt="200x200" src="~/Images/200.png">*@
+    </div>
+    <div class="col-xs-12 col-md-9">
+        <div class="row" style="height:50px">
+            
+        </div>
+
+        
+    </div>
+
+</div>
+
+
+<style>
+
+
+    #npanelbar1 .k-link {
+        background-image: none;
+        color: #262626;
+        /*background-color: rgba(245, 245, 245, 0.30);*/
+    }
+
+    #npanelbar1 li:nth-child(1) .k-link {
+        background-color: rgba(245, 245, 0, 0.10);
+    }
+
+    #npanelbar1 li:nth-child(2) .k-link {
+        background-color: rgba(245, 245, 245, 0.20);
+    }
+
+    #npanelbar1 li:nth-child(3) .k-link {
+        background-color: rgba(245, 245, 245, 0.20);
+    }
+
+    #npanelbar1 li:nth-child(4) .k-link {
+        background-color: rgba(245, 245, 245, 0.20);
+    }
+
+    #npanelbar1 li:nth-child(5) .k-link {
+        background-color: rgba(245, 245, 245, 0.30);
+    }
+
+    #npanelbar1 li:nth-child(6) .k-link {
+        background-color: rgba(245, 245, 245, 0.30);
+    }
+
+    #npanelbar1 li:nth-child(7) .k-link {
+        background-color: #cbd1e5;
+    }
+
+    .h1 {
+        font-size: medium
+    }
+</style>
+
+
+<style>
+    ul.k-panelbar .k-link {
+        background-color: rgba(245, 245, 245, 0.30);
+        color: #fff;
+    }
+
+    ul.k-panelbar .k-link {
+        background-color: rgba(245, 245, 245, 0.30);
+        color: #fff;
+    }
+
+    ul.k-panelbar .k-link {
+        background-color: rgba(245, 245, 245, 0.30);
+        color: #fff;
+    }
+
+    ul.k-panelbar .k-link {
+        background-color: rgba(245, 245, 245, 0.30);
+        color: #fff;
+    }
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*<div class="jumbotron">
+
+
+        <p class="lead"><b>Statistics</b></p>
+
+        <table style="margin:10px 10px; min-width:600px; border:1px solid gray;">
+
+            <tr>
+                <td>
+                    <p class="lead">
+                        <b>Sponsors</b>
+                    </p>
+
+                </td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td align="center">
+                    <p class="lead">Total</p>
+                    <b>@ViewData["ActiveSponsorsCount"] </b>
+                </td>
+                <td align="center">
+                    <p class="lead">Have Sponsorship</p>
+                    <b>@ViewData["GetActiveSponsoredCount"] </b>
+                </td>
+                <td align="center">
+                    <p class="lead">Pending</p>
+                    <b>@ViewData["GetActiveUnSponsoredCount"] </b>
+                </td>
+
+            </tr>
+        </table>
+
+
+        <table style=" margin:10px 10px; min-width:600px; border:1px solid gray ">
+
+            <tr>
+                <td>
+                    <p class="lead">
+                        <b>Orphans</b>
+                    </p>
+
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td align="center">
+                    <p class="lead">Total</p>
+                    <b>@ViewData["ActiveOrphansCount"] </b>
+                </td>
+                <td align="center">
+                    <p class="lead">Sponsored</p>
+                    <b>@ViewData["GetActiveSponsoredOrphansCount"] </b>
+                </td>
+                <td align="center">
+                    <p class="lead">Pending</p>
+                    <b>@ViewData["GetActiveUnSponsoredOrphansCount"] </b>
+                </td>
+                <td align="center">
+                    <p class="lead">Older than 16 years old</p>
+                    <b>@ViewData["ActiveOrphansOlderThan17Count"] </b>
+                </td>
+
+
+
+            </tr>
+        </table>
+
+    </div>
+
+
+
+
+    <script>
+        function select(e) {
+            var tmp = $(e.item).find("> .k-link").text();
+            if (tmp.startsWith("ID", 0)) {
+
+                var id = tmp.replace(/[^\d.]/g, '');
+
+                var url = "/Orphan/Edit/" + id;
+
+                window.location = url;
+
+            }
+            //  window.location = url;
+        }
+    </script>
+    <style>
+        ul.k-panelbar .k-link {
+            background-color: #f0713a;
+            color: #fff;
+        }
+
+        ul.k-panelbar .k-link {
+            background-color: #30713a;
+            color: #fff;
+        }
+
+        ul.k-panelbar .k-link {
+            background-color: #ffffff;
+            color: #fff;
+        }
+
+        ul.k-panelbar .k-link {
+            background-color: #d5d0d2;
+            color: #fff;
+        }
+    </style>*@
+
+
+
+
+
+
+
+
+
+
+
+@*<div class="row">
+        <div class="col-xs-4 col-md-3 placeholder">
+            <img class="img-responsive" alt="200x200" src="~/Images/200.png">
+        </div>
+        <div class="col-xs-12 col-md-9">
+            <div class="row">
+                <div class="col-xs-12 col-md-12">
+                    <h2>Lorem ipsum...</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-md-4">
+                    <p>
+                        Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                        Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a
+                        galley of type and scrambled it to make a type specimen book.
+                    </p>
+
+                    <p>
+                        <kendo-button name="PrimaryButton" tag="span" class="textButton k-primary">Primary Button</kendo-button>
+                    </p>
+                </div>
+
+                <div class="col-xs-12 col-md-4">
+                    <p>
+                        Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                        Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a
+                        galley of type and scrambled it to make a type specimen book.
+                    </p>
+                    <p>
+                        <kendo-button name="TextButton" tag="span" class="textButton">Button</kendo-button>
+                    </p>
+
+                </div>
+                <div class="col-xs-12 col-md-4">
+                    <p>
+                        Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                        Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a
+                        galley of type and scrambled it to make a type specimen book.
+                    </p>
+
+                    <p>
+                        <kendo-button name="Button" tag="span" class="textButton">Button</kendo-button>
+                    </p>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-xs-18 col-md-12">
+            @(Html.Kendo().Grid<NoorTrust.DonationFund.WebUi.Models.DisplayViewModel>()
+                    .Name("grid")
+                    .Columns(columns =>
+                    {
+                        columns.Bound(p => p.OrderID).Filterable(false);
+                        columns.Bound(p => p.Freight);
+                        columns.Bound(p => p.OrderDate).Format("{0:MM/dd/yyyy}");
+                        columns.Bound(p => p.ShipName);
+                        columns.Bound(p => p.ShipCity);
+                    })
+                    .Pageable()
+                    .Sortable()
+                    .Scrollable()
+                    .Filterable()
+                    .HtmlAttributes(new { style = "height:550px;" })
+                    .DataSource(dataSource => dataSource
+                        .Ajax()
+                        .PageSize(20)
+                        .Read(read => read.Action("Orders_Read", "Grid"))
+                    )
+            )
+        </div>
+    </div>*@
+<script>jQuery("#AdminMenuItem").css("color", "#f85a00");</script>

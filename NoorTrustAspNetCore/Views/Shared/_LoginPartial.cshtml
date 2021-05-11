@@ -1,0 +1,66 @@
+﻿
+@using Microsoft.AspNetCore.Identity
+
+
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" id="logoutForm" class="navbar-right">
+
+        <a class="navbar-brand  align-items-end" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">@UserManager.GetUserName(User)</a>
+
+
+        <button type="submit" class="btn btn-link navbar-btn navbar-brand">Logout</button>
+
+    </form>
+    
+    <a id="AdminMenuItem" class="navbar-brand  align-items-end" asp-controller="Admin" asp-action="Index">Admin</a>
+}
+else
+{
+
+    <a class="navbar-brand  align-items-end" asp-area="Identity" asp-page="/Account/Register">Register</a>
+    <a class="navbar-brand  align-items-end" asp-area="Identity" asp-page="/Account/Login">Login</a>
+
+}
+
+@*@using Microsoft.AspNet.Identity
+
+
+    @if (Request.IsAuthenticated)
+    {
+        using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <ul class="nav navbar-nav navbar-right">
+
+
+                <li id="MyAccountMenuItem">
+                    @Html.ActionLink("" + "My Account" + " ", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage", style = "font-size:small" })
+                </li>
+                }
+
+                <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
+                @if (User.IsInRole("Admin"))
+                {
+                    <li id="AdminMenuItem">@Html.ActionLink("Admin", "Index", "UsersAdmin")</li>
+
+                }
+            </ul>
+
+
+        }
+    }
+    else
+    {
+
+
+
+        <ul class="nav navbar-nav navbar-right">
+
+            <li id="RegisterMenuItem">@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+            <li id="LoginMenuItem">@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+        </ul>*@

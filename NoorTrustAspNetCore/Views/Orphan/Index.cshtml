@@ -1,0 +1,470 @@
+﻿
+@using Kendo.Mvc.UI
+
+@*@model IEnumerable<NoorTrust.DonationFund.WebUi.Models.OrphanViewModel>*@
+
+<script src="@Url.Content("~/js/cultures/kendo.culture.en-GB.min.js")">
+
+
+</script>
+<script type="text/javascript">
+    //set culture of the Kendo UI
+    kendo.culture("en-GB");
+
+
+</script>
+
+
+
+<div class="row">
+    <div class="col-xs-18 col-md-12">
+        <div style="width:90%; margin:0 auto 0 auto;">
+
+            @(Html.Kendo().Grid<NoorTrust.DonationFund.WebUi.Models.OrphanViewModel>()
+                      .Name("orphanGrid")
+                      .HtmlAttributes(new { style = "height:1000px;font-size:12px" })
+                      .Columns(columns =>
+                      {
+                          columns.Select().Width(30);
+                          columns.Bound(c => c.OrphanFileId).Title("")
+.ClientTemplate(
+@"<div class='customer-photo'
+                                                          style='background-image: url(#: ThumbProfileImagepath #);'></div>")
+.Width(100).Filterable(false);
+                          columns.Bound(p => p.Id).Title("Orphan ID").ClientFooterTemplate("Total Count: #=count#").Width(70);
+                           columns.Bound(p => p.SponsorId).Title("Spon. ID").Width(70);
+                                                                                                              //columns.Bound(p => p._SponsorId).Title("Spon.ID").Sortable(true).Filterable(false).Width(50)
+                                                                                                              columns.Bound(p => p.RegistarDate).Title("Register Date").ClientTemplate("#= kendo.toString(RegistarDate, 'dd/MM/yyyy') #");
+
+                          columns.Bound(p => p.ArMotherName).Title("اسم الأم").HtmlAttributes(new { style = "width:100;font-size:large;direction:rtl;" });
+                                                                                                              //columns.Bound(p => p.ArLastName).Title("اللقب").HtmlAttributes(new { style = "width:100;font-size:large;direction:rtl;" });
+                                                                                                              columns.Bound(p => p.ArGrandFather).Title("اسم الجد").HtmlAttributes(new { style = "width:100;font-size:large;direction:rtl;" });
+                          columns.Bound(p => p.ArFatherName).Title("اسم الاب").HtmlAttributes(new { style = "width:100;font-size:large;direction:rtl;" });
+                          columns.Bound(p => p.ArFirstName).Title("الاسم").HtmlAttributes(new { style = "width:100;font-size:large;direction:rtl;" });
+
+
+
+
+                          columns.Bound(p => p.DOB).Title("DOB").ClientTemplate("#= kendo.toString(DOB, 'dd/MM/yyyy') #");
+                          columns.Bound(p => p.AgeString).Title("Age").Width(70).Sortable(false).Filterable(false);
+
+                          columns.Bound(p => p.Gender).Title("Gender").ClientTemplate("#= Gender ? 'Male' : 'Female' #").Width(60).Sortable(true);
+                          columns.Bound(p => p.CityId).Title("City").HtmlAttributes(new { style = "width:100;font-size:large;direction:ltr;" });
+                          columns.Bound(p => p.FatherName).Title("From Branch").HtmlAttributes(new { style = "width:100;font-size:small;direction:ltr;" });
+
+                          columns.Bound(p => p.IsActive).Title("Status").ClientTemplate("#= IsActive ? 'Active' : 'Inactive' #").Width(70).Hidden(false);
+                        //  columns.Bound(p => p.OrphanFileName);//.Title("Status").ClientTemplate("#= IsActive ? 'Active' : 'Inactive' #").Width(70).Hidden(false);
+                                                                                                              columns.Command(command => { command.Edit(); command.Destroy(); }).Width(170);
+                      })
+                        .ToolBar(toolbar =>
+                        {
+                            toolbar.ClientTemplateId("GridToolbarTemplateX");
+                        })
+                                                                                               .Excel(excel => excel
+.FileName("ExportAll.xlsx")
+.Filterable(true)
+.AllPages(true)
+.ProxyURL(Url.Action("Excel_Export_Save", "Orphan"))
+)
+                      .Editable(editable => editable.Mode(GridEditMode.PopUp).Window(w => w.Events(e => e.Close("onClose"))).Window(w => w.Width(1460).Draggable().Resizable().Animation(true).Modal(true)).DisplayDeleteConfirmation(true))
+
+                       .Pageable(pageable => pageable
+        .Refresh(true)
+        .PageSizes(false)
+        .PageSizes(new[] { 20, 50, 100, 200, 500 })
+        )
+         .Resizable(resize => resize.Columns(true))
+.Reorderable(reorder => reorder.Columns(true))
+.Filterable().PersistSelection(true)
+                               //  .Pageable()
+                               .Navigatable()
+                              .Sortable(sortable =>
+                              {
+                                  sortable.SortMode(GridSortMode.SingleColumn);
+                              })
+                              .Scrollable()
+                      .Events(events =>
+                      {
+                          events.DataBound("onOrphanDataBound").Edit("onOrphanEdit");
+                      })
+                      .DataSource(dataSource => dataSource
+                        .Ajax()
+                        .ServerOperation(true)
+                        .PageSize(20)
+                         .Sort(sort => sort.Add("LastUpdated").Descending())
+                        .Events(events => events.Error("orphanGrid_Error")) //Persons_ReadAsync
+                        .Model(model => model.Id(p => p.Id))
+                        //   .Model(model => model.Field(p => p.f.OrphanFileId))
+                        .Read(read => read.Action("Orphans_ReadAsync", "Orphan"))
+                      .Create("Orphans_Create", "Orphan")
+                      .Update("Orphans_Update", "Orphan")
+                      .Destroy("Orphans_Destroy", "Orphan")
+                      .Aggregates(aggregates =>
+                      {
+                          aggregates.Add(p => p.IsActive).Count();
+
+                          aggregates.Add(p => p.Id).Count();
+
+                      })
+                    
+                      )
+            )
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function onChange_CountryId(e) {
+
+
+        var grid = $("#orphanGrid").data("kendoGrid");
+        var donorDetails = grid.editable.options.model;
+
+        donorDetails.set("CountryId", e.sender.value());
+
+    }
+
+
+
+
+
+    $(function () {
+
+        var gridx = $("#orphanGrid").data("kendoGrid");
+
+        $("#showColumn").kendoColumnMenu({
+            filterable: false,
+            sortable: false,
+
+            dataSource: gridx.dataSource,
+            columns: gridx.columns,
+            owner: gridx
+        });
+       
+
+    });
+    //----------------------------------------------------------------
+
+      var value = "";
+    function onClickAddOrphanActivity(e) {
+      //  kendoConsole.log("event :: click (" + $(e.event.target).closest(".k-button").attr("id") + ")");
+
+        var grid = $("#orphanGrid").data("kendoGrid");
+
+        if ((grid != null) && (grid.editable != null)) {
+
+            var orphanDetails = grid.editable.options.model;
+
+
+            value =  orphanDetails.Id;
+
+           // var s = orphanId;
+            $.ajax({
+                type: "post",
+                url: '@Url.Action("Orphans_AddOrphanActivity", "Orphan", new { id= "value" })'.replace("value", value),
+              
+                contentType: "application/json; charset=utf-8",
+             
+                success: function (r) {
+                    var grid = $("#orphanActivitiesGrid").data("kendoGrid");
+                    grid.dataSource.read();
+                },
+                error: function (r) {
+                   // alert(r.responseText);
+                }
+            });
+
+        }
+        }
+
+
+
+    function onClose(e) {
+
+
+        $("#orphanGrid").data("kendoGrid").dataSource.read();
+
+        var URLx = window.location.href;
+        location.href = URLx;
+
+
+    }
+
+    function onOrphanEdit(e) {
+        var files = [];
+
+        createUpload();
+        createArray();
+
+        function createArray() {
+            $("#upload").data("kendoUpload").destroy();
+            $("#portfolioUploadDiv").empty();
+            var totalNumber = 0;
+            if (e.model.UploadInitialFilesList != null) {
+
+                totalNumber = e.model.UploadInitialFilesList.length;
+
+            }
+            var data = e.model.UploadInitialFilesList;
+
+            for (var i = 0; i < totalNumber; i++) {
+                files.push({ name: data[i].FileName, size: data[i].FileSize, extension: data[i].FileExtension });
+            }
+
+            createUpload();
+
+        }
+
+        function createUpload() {
+            $('<input type="file" name="files" id="upload" />').appendTo("#portfolioUploadDiv").kendoUpload({
+                async: {
+                    saveUrl: "Orphan/SaveOrphanFilesAsync/" + e.model.Id,
+                    removeUrl: "Orphan/RemoveOrphanFiles/" + e.model.FileNames,
+                    autoUpload: true
+                },
+                files: files,
+                template: kendo.template($('#fileTemplate').html()),
+                localization: {
+                    select: 'Upload Portfolio photo',
+
+                },
+
+                select: onSelectOne,
+                upload: onUpload,
+                //  success: onSuccess,
+                error: onError
+            });
+        }
+      //  alert(e.model.Id);
+        //-----------------------------------------------------------------------------
+
+
+        $("#orphanActivitiesGrid").data("kendoGrid").dataSource.read({ id: e.model.Id })
+
+
+
+    }
+    function onSelectOne(e) {
+        if (e.sender.element.length > 1) {
+            alert("Can not Upload more than one file");
+            e.preventDefault();
+        }
+
+        if (e.files.length > 1) {
+            alert("Please select maximum One file to upload");
+            e.preventDefault();
+        }
+
+    }
+    function onUpload(e) {
+        // todo limit only one upload
+        if (e.sender.options.files.length > 0) {
+
+            alert("Cant upload more than One file");
+            e.preventDefault();
+
+        }
+      
+    }
+    function onError(e) {
+        alert(e.statusText + " " + e.responseText);
+    }
+
+
+    function onOrphanDataBound(e) {
+        var rows = e.sender.tbody.children();
+
+
+        for (var x = 0; x < rows.length; x++) {
+            var row = $(rows[x]);
+            var dataItem = e.sender.dataItem(row);
+
+            if (!dataItem.get("IsActive")) {
+                row.addClass("Inactive");
+            }
+            //if (dataItem.get("IsApproved") == false) {
+            //    row.addClass("IsApproved");
+            //}
+
+        }
+    }
+    //----------------------------------------------------------------
+    function onDataBound(e) {
+        //Implement the event handler for DataBound
+    }
+
+    function onSaveChangesActivityGrid(e) { }
+    function onSync(e) { }
+
+
+    //--------------------------------------------------------------------
+
+
+    orphanGrid_Error = function (args) {
+        if (args.errors) {
+            var grid = $("#orphanGrid").data("kendoGrid");
+            var validationTemplate = kendo.template($("#gridValidationMessageTemplate").html());
+            grid.one("dataBinding", function (e) {
+                e.preventDefault();
+
+                $.each(args.errors, function (propertyName) {
+                    var renderedTemplate = validationTemplate({ field: propertyName, messages: this.errors });
+                    grid.editable.element.find(".errors").append(renderedTemplate);
+                });
+            });
+        }
+    };
+</script>
+
+<script type="text/x-kendo-template" id="gridValidationMessageTemplate">
+    # if (messages.length) { #
+    <li>
+        #=field#
+        <ul>
+            # for (var i = 0; i < messages.length; ++i) { #
+            <li>#= messages[i] #</li>
+            # } #
+        </ul>
+    </li>
+    # } #
+</script>
+
+
+
+<script id="fileTemplate" type="text/x-kendo-template">
+    <span class='k-progress'></span>
+    <div class='file-wrapper' style="vertical-align: text-bottom">
+        <span class='file-icon #=addExtensionClass(files[0].extension)#'></span>
+        <a class='k-button k-button-icontext' style='color:black;' href='/Orphan/DownloadFile/?fileUploadString=#= name # '><span class='command'>#=name#</span></a>
+        <span class='file-heading file-size-heading'>Size: #=Math.ceil(size / 1024) #  KB</span>
+
+        @*<a href="/Donor/DownloadFile?fileUploadId=#= FileUploadId #">#= AttachmentName #</a>*@
+        <button type='button' class='k-upload-action'></button>
+    </div>
+</script>
+<script>
+    function addExtensionClass(extension) {
+        switch (extension) {
+            case '.jpg':
+            case '.png':
+            case '.gif':
+                return "img-file";
+            case '.doc':
+            case '.docx':
+                return "doc-file";
+            case '.xls':
+            case '.xlsx':
+                return "xls-file";
+            case '.pdf':
+                return "pdf-file";
+            case '.zip':
+            case '.rar':
+                return "zip-file";
+            default:
+                return "default-file";
+        }
+    }
+</script>
+
+<script id="GridToolbarTemplateX" type="text/x-kendo-template">
+    <div class="toolbar" id="showColumnToolbar">
+        <a class="k-button k-button-icontext k-grid-add" href="\#"><span class="k-icon k-i-add"></span> Add Orphan</a>
+        @*<a class="k-button k-button-icontext k-grid-excel" href="\#"><span class="k-icon k-i-excel"></span>Export to Excel</a>*@
+        <span id="showColumn"> Custom View&nbsp;</span>
+    </div>
+
+</script>
+
+
+<style>
+
+    .customer-photo {
+        display: inline-block;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background-size: 32px 35px;
+        background-position: center center;
+        vertical-align: middle;
+        line-height: 32px;
+        box-shadow: inset 0 0 1px #999, inset 0 0 10px rgba(0,0,0,.2);
+        margin-left: 5px;
+    }
+
+
+    .file-icon {
+        display: inline-block;
+        float: left;
+        width: 48px;
+        height: 48px;
+        margin-left: 10px;
+        margin-top: 13.5px;
+    }
+
+    .img-file {
+        background-image: url(/upload/jpg.png);
+    }
+
+    .doc-file {
+        background-image: url(/upload/doc.png);
+    }
+
+    .pdf-file {
+        background-image: url(/upload/pdf.png);
+    }
+
+    .xls-file {
+        background-image: url(/upload/xls.png);
+    }
+
+    .zip-file {
+        background-image: url(/upload/zip.png);
+    }
+
+    .default-file {
+        background-image: url(/upload/default.png);
+    }
+
+    #example .file-heading {
+        font-family: Arial;
+        font-size: 1.1em;
+        display: inline-block;
+        float: left;
+        width: 60%;
+        margin: 0 0 0 20px;
+        height: 25px;
+        -ms-text-overflow: ellipsis;
+        -o-text-overflow: ellipsis;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
+    #example .file-name-heading {
+        font-weight: bold;
+        margin-top: 20px;
+    }
+
+    #example .file-size-heading {
+        font-weight: normal;
+        font-style: italic;
+    }
+
+    li.k-file .file-wrapper .k-upload-action {
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+
+    li.k-file div.file-wrapper {
+        position: relative;
+        height: 75px;
+        vertical-align: middle;
+    }
+</style>
+
+
+
+
+<script>jQuery("#OrphanMenuItem").css("color", "#f85a00");</script>

@@ -1,0 +1,438 @@
+﻿
+@using Kendo.Mvc.UI
+
+@*@model IEnumerable<NoorTrust.DonationFund.WebUi.Models.SponsorViewModel>*@
+
+<script src="@Url.Content("~/js/cultures/kendo.culture.en-GB.min.js")">
+
+
+</script>
+<script type="text/javascript">
+    //set culture of the Kendo UI
+    kendo.culture("en-GB");
+
+
+</script>
+
+@{
+    // Culture = "en-GB";
+}
+
+<div class="row" style="height:50px">
+</div>
+
+<div class="row">
+    <div class="col-xs-18 col-md-12">
+        <div style="width:90%; margin:0 auto 0 auto;">
+            @(Html.Kendo().Grid<NoorTrust.DonationFund.WebUi.Models.SponsorViewModel>().Name("sponsorGrid")
+                  .HtmlAttributes(new { style = "height:850px;" })
+                  .Columns(columns =>
+                  {
+                      columns.Select().Width(30);
+                      columns.Bound(p => p.Id).Title("Sp. ID").ClientFooterTemplate("Total Count: #=count#").Width(80).Sortable(true);
+                      columns.Bound(p => p.Title).Title("Title").Width(60).Sortable(true);
+                      columns.Bound(p => p.FirstName).Title("First Name").Sortable(true);
+                      //  columns.Bound(p => p.MiddleName).Title("Middle Name").Sortable(true);
+                      columns.Bound(p => p.LastName).Title("Last Name").Sortable(true);
+
+                      columns.Bound(p => p.CalculatedNumberOfOrphans).Title("Sponsoring").Width(80).Filterable(false).Sortable(false);
+                      columns.Bound(p => p.NumberOfOrphans).Title("Requesting").Width(80);
+                      columns.Bound(p => p.PaymentName).Title("PaymentName").Width(180);
+                      columns.Bound(p => p.Address1).Title("Address1").Width(160).Hidden();
+                      columns.Bound(p => p.Address2).Title("Address2").Width(160).Hidden();
+                      columns.Bound(p => p.City).Title("City").Width(150);
+                      columns.Bound(p => p.County).Title("County").Width(160).Hidden();
+                      columns.Bound(p => p.PostalCode).Title("PostCode").Hidden();
+                      columns.Bound(p => p.Country).Title("Country").Width(140).Hidden();
+                      columns.Bound(p => p.Email).Title("Email").Width(160).Hidden();
+                      columns.Bound(p => p.MobileNumber).Title("Mobile").Width(160).Hidden();
+                      //  columns.Bound(p => p.IsGiftAId).Title("IsGiftAId").Width(160).Hidden();
+                      columns.Bound(p => p.DeactivatedDate).Title("Deactivated Date").ClientTemplate("#= kendo.toString(DeactivatedDate, 'G') #").Hidden();
+
+                      columns.Bound(p => p.IsReceiveEmail).Title("IsReceiveEmail").Width(110).Hidden(true).Sortable(true);
+                      columns.Bound(p => p.IsReceiveMobile).Title("IsReceiveMobile").Width(110).Hidden(true).Sortable(true);
+                      columns.Bound(p => p.IsReceivePost).Title("IsReceivePost").Width(110).Hidden(true).Sortable(true);
+                      columns.Bound(p => p.Comments).Title("").HtmlAttributes(new { style = "color:red; font-weight:bold;padding-left:20px" }).Filterable(false).Sortable(false);
+                      columns.Bound(p => p.IsActive).Title("Status").ClientTemplate("#= IsActive ? 'Active' : 'Inactive' #").Width(100);
+                      columns.Bound(p => p.IsGiftAid).Hidden(true);
+                      columns.Command(command => { command.Edit(); command.Destroy(); }).Width(170);
+                  })
+                   .ToolBar(toolbar =>
+                   {
+                       toolbar.ClientTemplateId("GridToolbarTemplate");
+                   })
+                   .Excel(excel => excel
+.FileName("ExportAll.xlsx")
+.Filterable(true)
+.AllPages(true)
+.ProxyURL(Url.Action("Excel_Export_Save", "Sponsor"))
+)
+                     // .ToolBar(toolbar =>
+                     //{
+                     //    toolbar.Create();
+                     //})
+                     .Editable(editable => editable.Mode(GridEditMode.PopUp).Window(w => w.Width(1500).Events(cc => cc.Close("onCloseSponsor")).Draggable().Resizable().Animation(true).Modal(true)).DisplayDeleteConfirmation(true))
+
+
+     .Pageable(pageable => pageable
+           .Refresh(true)
+           .PageSizes(false)
+           .PageSizes(new[] { 15, 20, 50, 100, 200, 500 })
+           )
+     .Resizable(resize => resize.Columns(true))
+.Reorderable(reorder => reorder.Columns(true))
+.Filterable().PersistSelection(true)
+                           .Pageable()
+                           .Navigatable()
+                          .Sortable(sortable =>
+                          {
+                              sortable.SortMode(GridSortMode.SingleColumn);
+                          })
+                          .Scrollable()
+                  .Events(events =>
+                  {
+                      events.DataBound("onSponsorDataBound").Edit("onSponsorEdit").Change("onChange");
+                  })
+                  .DataSource(dataSource => dataSource
+                    .Ajax()
+                    .ServerOperation(true)
+                    .PageSize(20)
+                    .Events(events => events.Error("sponsorGrid_Error")) //Sponsors_ReadAsync
+                     .Sort(sort => sort.Add("LastUpdated").Descending())
+                    .Model(model => model.Id(p => p.Id))
+                    .Read(read => read.Action("Sponsors_ReadAsync", "Sponsor"))
+                    .Create("Sponsors_Create", "Sponsor")
+                    .Update("Sponsors_Update", "Sponsor")
+                    .Destroy("Sponsors_Destroy", "Sponsor")
+                     .Aggregates(aggregates =>
+                     {
+                         //  aggregates.Add(p => p.InActive).Count();
+
+                         aggregates.Add(p => p.Id).Count();
+
+                     })
+                  // .Group(groups => groups.Add(p => p.InActive))
+                  )
+            )
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    $(function () {
+
+        var grid = $("#sponsorGrid").data("kendoGrid");
+
+        $("#showColumn").kendoColumnMenu({
+            filterable: false,
+            sortable: false,
+
+            dataSource: grid.dataSource,
+            columns: grid.columns,
+            owner: grid
+        });
+    });
+
+
+    function onChange_CountryId(e) {
+      
+
+        var grid = $("#sponsorGrid").data("kendoGrid");
+        var donorDetails = grid.editable.options.model;
+
+        donorDetails.set("Country", e.sender.value());
+      
+    }
+
+
+
+    function onChange(arg) {
+       //s kendoConsole.log("The selected product ids are: [" + this.selectedKeyNames().join(", ") + "]");
+
+
+    }
+    function onSyncOrphanGrid(e) {
+
+      //  $("#sponsorGrid").data("kendoGrid").dataSource.read();
+        $("#sponsorGrid").data("kendoGrid").refresh();
+    }
+
+
+    var value = "";
+    function onClickAssignNewOrphan(e) {
+      //  kendoConsole.log("event :: click (" + $(e.event.target).closest(".k-button").attr("id") + ")");
+
+        var grid = $("#sponsorGrid").data("kendoGrid");
+
+        if ((grid != null) && (grid.editable != null)) {
+
+            var sponsorDetails = grid.editable.options.model;
+
+
+            value = $("#orphanComboBox").data("kendoComboBox").value() + "|" + sponsorDetails.Id;
+
+           // var s = orphanId;
+            $.ajax({
+                type: "post",
+                url: '@Url.Action("Orphans_AssignToSponsor", "Orphan", new { id= "value" })'.replace("value", value),
+               //  data: JSON.stringify( { "id":  s }),
+                contentType: "application/json; charset=utf-8",
+              //  dataType: "text",
+                success: function (r) {
+                    //     alert(r);
+                },
+                error: function (r) {
+                   // alert(r.responseText);
+                }
+            });
+
+        }
+        }
+
+    function onClickAddSponsorActivity(e) {
+      //  kendoConsole.log("event :: click (" + $(e.event.target).closest(".k-button").attr("id") + ")");
+
+        var grid = $("#sponsorGrid").data("kendoGrid");
+
+        if ((grid != null) && (grid.editable != null)) {
+
+            var orphanDetails = grid.editable.options.model;
+
+
+            value =  orphanDetails.Id;
+
+           // var s = orphanId;
+            $.ajax({
+                type: "post",
+                url: '@Url.Action("Sponsors_AddSponsorActivity", "Sponsor", new { id= "value" })'.replace("value", value),
+               //  data: JSON.stringify( { "id":  s }),
+                contentType: "application/json; charset=utf-8",
+              //  dataType: "text",
+                success: function (r) {
+                    //     alert(r);
+                    var grid = $("#sponsorActivitiesGrid").data("kendoGrid");
+                    grid.dataSource.read();
+                },
+                error: function (r) {
+                   // alert(r.responseText);
+                }
+            });
+
+        }
+    }
+
+
+
+    function onClickAddNewDonation(e) {
+      //  kendoConsole.log("event :: click (" + $(e.event.target).closest(".k-button").attr("id") + ")");
+
+        var grid = $("#sponsorGrid").data("kendoGrid");
+
+        if ((grid != null) && (grid.editable != null)) {
+
+            var orphanDetails = grid.editable.options.model;
+
+
+            value =  orphanDetails.Id;
+
+           // var s = orphanId;
+            $.ajax({
+                type: "post",
+                url: '@Url.Action("Donations_AddNewDonation", "Donation", new { id= "value" })'.replace("value", value),
+               //  data: JSON.stringify( { "id":  s }),
+                contentType: "application/json; charset=utf-8",
+              //  dataType: "text",
+                success: function (r) {
+                    var grid = $("#donationGrid").data("kendoGrid");
+                    grid.dataSource.read();
+                },
+                error: function (r) {
+                   // alert(r.responseText);
+                }
+            });
+
+        }
+    }
+
+
+        //-----------------Grid -----  $(function () {})------------------------------------------
+        function onCloseSponsor(e) {
+
+
+            $("#sponsorGrid").data("kendoGrid").dataSource.read();
+
+            var URLx = window.location.href;
+            location.href = URLx;
+
+
+        }
+
+        function onSponsorEdit(e) {
+
+         var grid=   $("#sponsorGrid").data("kendoGrid");
+
+            if ((grid != null) && (grid.editable != null)) {
+
+                var orphanDetails = grid.editable.options.model;
+
+                @*var s = orphanDetails.Id;
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("Index", "Sponsor", new { id= "s" })',
+                    data: '{ tempDataValue:"' + s + '"}',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "text",
+                    success: function (r) {
+                        //     alert(r);
+                    },
+                    error: function (r) {
+                        alert(r.responseText);
+                    }
+                });*@
+
+                //-----------------------------------------------------------------------------
+                if (e.model.isNew()) {
+                }
+                else {
+                  //  $("#sponsorGrid").data("kendoGrid").dataSource.read({ id: orphanDetails.Id });
+
+                  //  $('#sponsorGrid').data().kendoGrid.dataSource.data(e.model.Sponsors);
+
+                    $("#orphanGrid").data("kendoGrid").dataSource.read({ id: e.model.Id })
+
+                    $("#donationGrid").data("kendoGrid").dataSource.read({ id: e.model.Id })
+
+
+                  //  $("#orphanComboBox").data("kendoComboBox").dataSource.read({ id: e.model.Id })
+                   // $("#personActivityGrid").data("kendoGrid").dataSource.read({ id: e.model.Id })
+                }
+            }
+            if (e.model.isNew()) {
+
+                $("#sponsorGridDiv").css({
+                    display: "none",
+                    visibility: "hidden"
+                });
+                $("#orphanGridDiv").css({
+                    display: "none",
+                    visibility: "hidden"
+                });
+                $("#donationGridDiv").css({
+                    display: "none",
+                    visibility: "hidden"
+                });
+                $("#activityGridDiv").css({
+                    display: "none",
+                    visibility: "hidden"
+                });
+            }
+            else {
+                $("#sponsorGridDiv").css({
+                    display: "block",
+                    visibility: "visible"
+                });
+                $("#orphanGridDiv").css({
+                    display: "block",
+                    visibility: "visible"
+                });
+                $("#donationGridDiv").css({
+                    display: "block",
+                    visibility: "visible"
+                });
+                $("#activityGridDiv").css({
+                    display: "block",
+                    visibility: "visible"
+                });
+            }
+
+
+        }
+
+    function onSponsorDataBound(e) {
+
+            var rows = e.sender.tbody.children();
+
+
+            for (var x = 0; x < rows.length; x++) {
+                var row = $(rows[x]);
+                var dataItem = e.sender.dataItem(row);
+
+                if (dataItem.get("InActive")) {
+                    row.addClass("Inactive");
+                }
+                //if (dataItem.get("IsApproved") == false) {
+                //    row.addClass("IsApproved");
+                //}
+
+            }
+    }
+    //-------------------------------------------------------------
+    function onOrphanDataBound(e) {
+
+        $(this).removeClass('k-grid-delete');
+        $(this).removeClass('k-grid-edit');
+    }
+    //-------------------------------------------------------------------------
+
+    function onDonationDataBound(e) {
+    }
+        //----------------------------------------------------------------
+        function onDataBound(e) {
+            //Implement the event handler for DataBound
+        }
+
+        function onSaveChangesActivityGrid(e) { }
+        function onSync(e) { }
+
+
+        //--------------------------------------------------------------------
+
+
+        sponsorGrid_Error = function (args) {
+            if (args.errors) {
+                var grid = $("#sponsorGrid").data("kendoGrid");
+                var validationTemplate = kendo.template($("#gridValidationMessageTemplate").html());
+                grid.one("dataBinding", function (e) {
+                    e.preventDefault();
+
+                    $.each(args.errors, function (propertyName) {
+                        var renderedTemplate = validationTemplate({ field: propertyName, messages: this.errors });
+                        grid.editable.element.find(".errors").append(renderedTemplate);
+                    });
+                });
+            }
+        };
+
+       
+</script>
+
+<script id="GridToolbarTemplate" type="text/x-kendo-template">
+    <div class="toolbar" id="showColumnToolbar">
+        <a class="k-button k-button-icontext k-grid-add" href="\#"><span class="k-icon k-i-add"></span> Add Sponsor</a>
+        <a class="k-button k-button-icontext k-grid-excel" href="\#"><span class="k-icon k-i-excel"></span>Export to Excel</a>
+        <span id="showColumn"> Custom View&nbsp;</span>
+    </div>
+
+</script>
+
+
+
+
+<script type="text/x-kendo-template" id="gridValidationMessageTemplate">
+    # if (messages.length) { #
+    <li>
+        #=field#
+        <ul>
+            # for (var i = 0; i < messages.length; ++i) { #
+            <li>#= messages[i] #</li>
+            # } #
+        </ul>
+    </li>
+    # } #
+</script>
+<script>jQuery("#SponsorMenuItem").css("color", "#f85a00");</script>
+
+
+
+

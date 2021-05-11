@@ -1,0 +1,99 @@
+﻿@using NoorTrust.DonationFund.WebUi.Models
+@using NoorTrust.DonationFund.Api.DataAccess
+@model DonationViewModel
+
+@*<ul class="errors" style="width:500px"></ul>*@
+
+@Html.HiddenFor(x => x.Id)
+@*@Html.Kendo().TextBoxFor(model => model.Id).Enable(false)*@
+@Html.Kendo().TextBoxFor(model => model.SponsorId).Enable(false)
+<table>
+    <tr>
+        <td>
+            @Html.LabelFor(m => m.DonationFor, "DonationFor:")
+            @Html.TextBoxFor(m => m.DonationFor, new { @class = "k-textbox", style = "direction:RTL;" })
+            @Html.ValidationMessageFor(m => m.DonationFor)
+        </td>
+
+        <td style="text-align: left; vertical-align: top">
+            @Html.LabelFor(m => m.DonationType, "DonationType:")
+            @Html.Kendo().DropDownListFor(m => m.DonationType).BindTo(Html.GetEnumSelectList(typeof(DonationType)))
+            @Html.ValidationMessageFor(m => m.DonationType)
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Html.LabelFor(m => m.DonationDate, "DonationDate:")
+            @Html.EditorFor(m => m.DonationDate)
+            @Html.ValidationMessageFor(m => m.DonationDate)
+        </td>
+
+        <td style="text-align: left; vertical-align: top">
+            @Html.LabelFor(m => m.DonationAmount, "DonationAmount:")
+            @Html.Kendo().NumericTextBoxFor(m => m.DonationAmount)
+            @Html.ValidationMessageFor(m => m.DonationAmount)
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Html.LabelFor(m => m.PaymentCategory, "PaymentCategory:")
+            @Html.Kendo().DropDownListFor(m => m.PaymentCategory).BindTo(Html.GetEnumSelectList(typeof(PaymentCategory)))
+            @Html.ValidationMessageFor(m => m.PaymentCategory)
+        </td>
+
+        <td style="text-align: left; vertical-align: top">
+            @Html.LabelFor(m => m.PaymentMethod, "PaymentMethod:")
+            @Html.Kendo().DropDownListFor(m => m.PaymentMethod).BindTo(Html.GetEnumSelectList(typeof(PaymentMethod)))
+            @Html.ValidationMessageFor(m => m.PaymentMethod)
+        </td>
+    </tr>
+
+    <tr>
+        <td style="text-align: left; vertical-align: top">
+            @Html.LabelFor(m => m.Notes, "Notes:")
+
+            @Html.TextAreaFor(m => m.Notes, new { style = "width: 99%;height:50px" })
+            @Html.ValidationMessageFor(m => m.Notes)
+
+
+        </td>
+        <td style="text-align: left; vertical-align: top"></td>
+    </tr>
+
+
+    <tr>
+        <td style="text-align: left; vertical-align: top">
+            @Html.Label("", "Last Updated", new { disabled = "disabled" })
+            @Html.Kendo().TextBoxFor(model => model.LastUpdated).Enable(false).Format("{0:dd/MM/yyyy hh:mm:ss}")
+            @Html.ValidationMessageFor(model => model.LastUpdated, "", new { @class = "text-danger" })
+        </td>
+        <td style="text-align: left; vertical-align: top">
+            &nbsp;
+
+        </td>
+        <td style="text-align: left; vertical-align: top"> &nbsp;</td>
+        <td style="text-align: left; vertical-align: top">
+            @Html.Label("", "Last Updated By", new { disabled = "disabled" })
+            @Html.Kendo().TextBoxFor(model => model.LastUpdatedBy).Enable(false)
+            @Html.ValidationMessageFor(model => model.LastUpdatedBy, "", new { @class = "text-danger" })
+        </td>
+
+
+
+</table>
+
+<style>
+
+    .table {
+        width: 100%;
+        line-height: 40px;
+    }
+
+        .table th,
+        .table td {
+            padding: 0.75rem;
+            vertical-align: top;
+            border-top: 1px solid #dee2e6;
+            line-height: 40px;
+        }
+</style>

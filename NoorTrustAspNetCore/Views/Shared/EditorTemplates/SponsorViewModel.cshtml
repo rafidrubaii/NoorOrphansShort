@@ -1,0 +1,712 @@
+﻿@using NoorTrust.DonationFund.WebUi.Models
+@using NoorTrust.DonationFund.Api.DataAccess
+
+@model SponsorViewModel
+
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+<ul class="errors" style="width:500px"></ul>
+@*<table style="margin:20px;"><tr><td style="vertical-align:top;"><ul class="warnings" style="width:500px"></ul></td><td style="vertical-align:top;"><ul class="warnings2" style="width:500px"></ul></td></tr></table>*@
+
+
+@Html.HiddenFor(x => x.Id)
+
+
+
+@*<h4>Donor</h4>class="container"*@
+
+
+<div style="margin:10px;vertical-align:top">
+    <table style="padding:20px; margin:0;border-radius:4px">
+        <tr>
+            <td style="vertical-align:top;width:800px">
+
+
+                <div id="personalDetailsDiv">
+
+                    <h5>Personal Details</h5>
+                    @Html.LabelFor(m => m.Id, "Sponsor ID: ") @Html.TextBoxFor(model => model.Id, new { disabled = "disabled" })
+                    <table style=" border-radius:70px; vertical-align:top">
+                        <tr style="border:1px #e0e0e0 solid; background-color:#f5f5f5;margin:2px ">
+
+                            <td style="text-align: left; vertical-align: top">
+                                @Html.Label("Tile")
+                                @Html.Kendo().DropDownListFor(m => m.Title).BindTo(Html.GetEnumSelectList(typeof(Titles)))
+                                @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+                            </td>
+                            <td style="text-align: left; vertical-align: top">
+                                @Html.Label("First Name")
+                                @Html.EditorFor(model => model.FirstName, new { @id = "FirstName", @name = "FirstName" })
+                                @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+                            </td>
+                            <td style="text-align: left; vertical-align: top">
+                                @Html.Label("Middle Name")
+                                @Html.EditorFor(model => model.MiddleName, new { @class = "k-textbox" })
+                                @Html.ValidationMessageFor(model => model.MiddleName, "", new { @class = "text-danger" })
+                            </td>
+                            <td style="text-align: left; vertical-align: top">
+                                @Html.Label("Surname")
+                                @Html.EditorFor(model => model.LastName, new { @id = "LastName", @name = "LastName" })
+                                @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+                            </td>
+                            <td style="text-align: left; vertical-align: top">
+                                @Html.LabelFor(model => model.Email)
+                                @Html.EditorFor(model => model.Email)
+                                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                            </td>
+
+
+                        </tr>
+                        <tr>
+                            <td style="text-align: left; vertical-align: top">
+                                @Html.Label("Tile (Arabic)")
+                                @Html.Kendo().DropDownListFor(m => m.ArTitle).BindTo(Html.GetEnumSelectList(typeof(TitlesArabic)))
+                                @Html.ValidationMessageFor(model => model.ArTitle, "", new { @class = "text-danger" })
+                            </td>
+                            <td style="text-align: left; vertical-align: top">
+                                @Html.Label("First Name (Arabic)")
+                                @Html.TextBoxFor(model => model.ArFirstName, new { @class = "k-textbox", style = "direction:RTL;" })
+                                @Html.ValidationMessageFor(model => model.ArFirstName, "", new { @class = "text-danger" })
+                            </td>
+                            <td style="text-align: left; vertical-align: top">
+                                @Html.Label("Surname (Arabic)")
+                                @Html.TextBoxFor(model => model.ArLastName, new { @class = "k-textbox", style = "direction:RTL;" })
+
+                                @Html.ValidationMessageFor(model => model.ArLastName, "", new { @class = "text-danger" })
+                            </td>
+                            <td style="text-align: left; vertical-align: top">
+                                @Html.Label("MobileNumber")
+                                @Html.EditorFor(model => model.MobileNumber)
+                                @Html.ValidationMessageFor(model => model.MobileNumber, "", new { @class = "text-danger" })
+                            </td>
+                            <td style="text-align: left; vertical-align: top">
+
+
+                                @Html.LabelFor(model => model.OtherEmail)<br />
+                                @Html.EditorFor(model => model.OtherEmail)
+                                @Html.ValidationMessageFor(model => model.OtherEmail, "", new { @class = "text-danger" })
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td style="text-align: left; vertical-align: top">
+                                @Html.Label("Address 1")
+                                @Html.TextAreaFor(model => model.Address1, new { @class = "mytextArea" })
+                                @Html.ValidationMessageFor(model => model.Address1, "", new { @class = "text-danger" })
+                            </td>
+                            <td style="text-align: left; vertical-align: top">
+                                @Html.Label("Address 2")
+                                @Html.TextAreaFor(model => model.Address2, new { @class = "mytextArea" })
+                                @Html.ValidationMessageFor(model => model.Address2, "", new { @class = "text-danger" })
+                            </td>
+                            <td style="text-align: left; vertical-align: top">
+                                @Html.LabelFor(model => model.City)
+                                @Html.EditorFor(model => model.City)
+                                @Html.ValidationMessageFor(model => model.City, "", new { @class = "text-danger" })
+                                @Html.Label("Post Code")
+                                @Html.EditorFor(model => model.PostalCode)
+                                @Html.ValidationMessageFor(model => model.PostalCode, "", new { @class = "text-danger" })
+                            </td>
+                            <td style="text-align: left; vertical-align: top">
+                                @Html.Label(" County")
+                                @Html.EditorFor(model => model.County)
+                                @Html.ValidationMessageFor(model => model.County, "", new { @class = "text-danger" })
+                                @Html.Label("Country")<br />
+
+                                @*@Html.Kendo().DropDownListFor(m => m.Country).BindTo(Html.GetEnumSelectList(typeof(CountryEnum)))*@
+                                @*@Html.Kendo().DropDownListFor(m => m.CountryID).BindTo((IEnumerable<SelectListItem>) ViewData["CountriesSelectList"])*@
+
+                                @Html.EditorFor(m => m.Country)
+
+                                @Html.ValidationMessageFor(model => model.Country, "", new { @class = "text-danger" })
+                            </td>
+                            <td style="text-align: left; vertical-align: top">
+                                @Html.Label("Home Phone")
+                                @Html.EditorFor(model => model.HomePhone, new { @id = "PhoneNumber", @name = "PhoneNumber" })
+                                @Html.ValidationMessageFor(model => model.HomePhone, "", new { @class = "text-danger" })
+                                <br /><br />
+                            </td>
+
+                        </tr>
+
+
+                        <tr>
+                            <td style="text-align: left; vertical-align: top"> &nbsp;</td>
+                            <td style="text-align: left; vertical-align: top"> &nbsp;</td>
+                            <td style="text-align: left; vertical-align: top"> &nbsp;</td>
+                            <td style="text-align: left; vertical-align: top"> &nbsp;</td>
+                            <td style="text-align: left; vertical-align: top"> &nbsp;</td>
+                            <td style="text-align: left; vertical-align: top"> &nbsp;</td>
+                        </tr>
+                    </table>
+                    <br />
+
+
+
+                    <table>
+                        <tr>
+
+                            <td style="text-align: left; vertical-align: top">
+                                @Html.Label("Gift Aid")<br />
+                                @Html.EditorFor(model => model.IsGiftAid)
+                                @Html.ValidationMessageFor(model => model.IsGiftAid, "", new { @class = "text-danger" })
+                            </td>
+                            <td style="text-align: left; vertical-align: top">
+
+                                @Html.Label("Gift Aid Ref")<br />
+                                @Html.EditorFor(model => model.GiftAidRef)
+                                @Html.ValidationMessageFor(model => model.GiftAidRef, "", new { @class = "text-danger" })
+
+                            </td>
+
+                            <td style="text-align: left; vertical-align: top">
+                                @Html.Label("Name on Bank Statement")<br />
+                                @Html.EditorFor(model => model.NameOnBankStatement)
+                                @Html.ValidationMessageFor(model => model.NameOnBankStatement, "", new { @class = "text-danger" })
+                            </td>
+                            <td style="text-align: left; vertical-align: top"> &nbsp;</td>
+                            <td style="text-align: left; vertical-align: top"> &nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left; vertical-align: top">
+                                @Html.Label("Receive Email ?")<br />
+                                @Html.EditorFor(m => m.IsReceiveEmail)
+                                @Html.ValidationMessageFor(model => model.IsReceiveEmail, "", new { @class = "text-danger" })
+                            </td>
+                            <td style="text-align: left; vertical-align: top">
+                                @Html.Label("Receive Mobile ?")<br />
+                                @Html.EditorFor(m => m.IsReceiveMobile)
+                                @Html.ValidationMessageFor(model => model.IsReceiveMobile, "", new { @class = "text-danger" })
+                            </td>
+                            <td style="text-align: left; vertical-align: top">
+                                @Html.Label("Receive Post ?")<br />
+                                @Html.EditorFor(m => m.IsReceivePost)
+                                @Html.ValidationMessageFor(model => model.IsReceivePost, "", new { @class = "text-danger" })
+                            </td>
+
+                            <td style="text-align: left; vertical-align: top"> &nbsp;</td>
+                            <td style="text-align: left; vertical-align: top"> &nbsp;</td>
+                        </tr>
+
+                    </table>
+
+                    <br />
+                    <br />
+
+
+                    <table>
+                        <tr>
+                            <td style="text-align: left; vertical-align: top">
+                                @Html.Label("Registration Date")<br />
+                                @Html.Kendo().DatePickerFor(model => model.RegisterDate).Culture("en-GB")
+                                @Html.ValidationMessageFor(model => model.RegisterDate, "", new { @class = "text-danger" })
+                            </td>
+                            <td style="text-align: left; vertical-align: top">
+                                @Html.Label("Active")<br />
+                                @Html.EditorFor(model => model.IsActive)
+                                @Html.ValidationMessageFor(model => model.IsActive, "", new { @class = "text-danger" })
+                            </td>
+                            <td style="text-align: left; vertical-align: top">
+                                @Html.Label("Deactivate Date")<br />
+                                @Html.Kendo().DatePickerFor(model => model.DeactivatedDate).Culture("en-GB").Enable(false)
+                                @Html.ValidationMessageFor(model => model.DeactivatedDate, "", new { @class = "text-danger" })
+                            </td>
+                            <td style="text-align: left; vertical-align: top"> &nbsp;</td>
+                            <td style="text-align: left; vertical-align: top"> &nbsp;</td>
+                        </tr>
+
+
+                    </table>
+                </div>
+                <br />
+                <div id="donationGridDiv">
+                    <h5>Donations</h5>
+                    @(Html.Kendo().Button()
+.Name("AddNewDonation").Enable(true)
+.Content("Add new Donation")
+.HtmlAttributes(new { type = "button", style = "data-toggle: tooltip;data-placement:bottom", title = "Click + Update to refresh the grid" })
+.Events(ev => ev.Click("onClickAddNewDonation")))
+
+
+                    @(Html.Kendo().Grid<DonationViewModel>()
+                                              .Name("donationGrid")
+                                              .HtmlAttributes(new { style = "width:640px; height:160px" })
+                                              .Columns(columns =>
+                                              {
+                                                  columns.Bound(c => c.Id).Hidden(true);
+                                                  columns.Bound(c => c.SponsorId).Hidden(true);
+                                                  columns.Bound(c => c.DonationFor);
+                                                  columns.Bound(c => c.DonationAmount);
+                                                  columns.Bound(c => c.DonationDate).Hidden(false);
+                                                  columns.Bound(c => c.Notes).Hidden(true);
+                                                  columns.Bound(c => c.DonationType).Hidden(true);
+                                                  columns.Bound(c => c.PaymentCategory).Hidden(true);
+                                                  columns.Bound(c => c.PaymentMethod).Hidden(true);
+                                                  columns.Bound(c => c.LastUpdated).Hidden(true);
+                                                  columns.Bound(c => c.LastUpdatedBy).Hidden(true);
+                                                  columns.Command(command =>
+                                                  {
+                                                      command.Edit().Text("<span class='command'>Edit</span>");//.HtmlAttributes(new { @class = "k-state-disabled" });
+                                                      command.Destroy().Text("<span class='command'>Delete</span>");//.HtmlAttributes(new { @class = "k-state-disabled" });
+                                                  }).Width(180);
+                                              })
+                                              //.ToolBar(toolbar =>
+                                              //{
+                                              //    toolbar.Create().Text("Add new Donation").HtmlAttributes(new { @class = "k-state-disabled" });
+                                              //})
+                                              //.ClientDetailTemplateID("templateY")
+                                              .Editable(editable => editable.Mode(GridEditMode.PopUp).Window(w => w.Width(560).Draggable().Resizable().Modal(true)).DisplayDeleteConfirmation(true))
+                                              //.Window(w => w.OtherDistributionMethod(e => e.Close("onSync")))
+
+                                              // .Pageable()
+                                              .Sortable(sortable =>
+                                              {
+                                                  sortable.SortMode(GridSortMode.SingleColumn);
+                                              })
+                                              .Filterable()
+
+                                              //.Pageable(pageable => pageable
+                                              //.Refresh(true)
+                                              //// .PageSizes(true)
+                                              //// .ButtonCount(20)
+                                              //)
+                                              .Scrollable()
+                                              .AutoBind(false)
+                                              .Events(events =>
+                                              {
+                                                  events.DataBound("onDonationDataBound").SaveChanges("onSaveChangesActivityGrid");//.Change("onDataBound");//.DataBinding("onDataBound");
+                                              })
+                                              .DataSource(dataSource => dataSource
+                                              .Ajax()
+                                              .AutoSync(false)
+
+                                              //   .PageSize(5)
+                                              .Sort(sort => sort.Add("Id").Descending())
+                                                .Model(model =>
+                                                {
+                                                    model.Id(e => e.Id);
+                                                    model.Field(e => e.Id).Editable(false);
+                                                    model.Field(p => p.SponsorId).Editable(false);
+
+                                                })
+
+                                              .Read(read => read.Action("Donations_ReadById", "Donation", new { id = "${Id}" }))
+                                              //// .Read(builder => builder.Url(@Request.Url.Scheme + "://" + @Request.Url.Authority + @Request.ApplicationPath.TrimEnd('/')  + "/DonorActivity/DonorActivities_ReadByID/" +  ViewData["Id"]).Type(HttpVerbs.Get))
+                                              //.Events(events => events.Sync("onSync"))
+                                              .Create(create => create.Action("Donations_CreateById", "Donation", new { id = "${Id}" }))
+                                              .Update(update => update.Action("Donations_UpdateById", "Donation", new { id = "${Id}" }).Type(HttpVerbs.Post))
+                                              .Destroy(destroy => destroy.Action("Donations_DestroyById", "Donation", new { id = "${Id}" }).Type(HttpVerbs.Delete))
+                                              //  .Group(groups => groups.Add(p => p.DonorName))
+                                              ).ToClientTemplate()
+
+                    )
+
+                </div>
+
+                <br />
+                <div>
+                    <table>
+                        <tr>
+                            <td style="text-align: left; vertical-align: top">
+                                @Html.Label("", "Last Updated", new { disabled = "disabled" })<br />
+                                @Html.Kendo().TextBoxFor(model => model.LastUpdated).Enable(false).Format("{0:dd/MM/yyyy hh:mm:ss}")
+                                @Html.ValidationMessageFor(model => model.LastUpdated, "", new { @class = "text-danger" })
+                            </td>
+                            <td style="text-align: left; vertical-align: top">
+                                &nbsp;
+
+                            </td>
+                            <td style="text-align: left; vertical-align: top"> &nbsp;</td>
+
+                            <td style="text-align: left; vertical-align: top">
+                                @Html.Label("", "Last Updated By", new { disabled = "disabled" })<br />
+                                @Html.Kendo().TextBoxFor(model => model.LastUpdatedBy).Enable(false)
+                                @Html.ValidationMessageFor(model => model.LastUpdatedBy, "", new { @class = "text-danger" })
+                            </td>
+                            <td style="text-align: left; vertical-align: top"> &nbsp;</td>
+                        </tr>
+                    </table>
+                </div>
+
+
+                @*<div id="activityGridDiv">
+                        <h4> Activities</h4>
+                        @(Html.Kendo().Grid<PersonActivityViewModel>()
+                                                        .Name("activityGrid")
+                                                        .HtmlAttributes(new { style = "width:710px; height:160px" })
+                                                        .Columns(columns =>
+                                                        {
+                                                            columns.Bound(c => c.Id).Hidden(true);
+                                                                //  columns.Bound(c => c.DonorName);
+
+                                                                //  columns.Bound(c => c.PostedDate).Title("Date").ClientTemplate("#= kendo.toString(PostedDate, 'G') #").Width(80);
+                                                                //     columns.Bound(c => c.Description);
+                                                                //     columns.Bound(c => c.IsActionRequired).ClientTemplate("#= (IsActionRequired!=null && IsActionRequired) ? 'Yes' : 'No' #").Title("Action?").Filterable(false).Width(70);
+                                                                //  columns.Bound(c => c.Author).Width(120);
+                                                                columns.Command(command => { command.Edit(); command.Destroy(); }).Width(180);
+                                                        })
+                                                        .ToolBar(toolbar =>
+                                                        {
+                                                            toolbar.Create().Text("Add new activity");
+                                                        })
+                                                        //.ClientDetailTemplateID("templateY")
+                                                        .Editable(editable => editable.Mode(GridEditMode.PopUp).Window(w => w.Width(560).Draggable().Resizable().Modal(true)).DisplayDeleteConfirmation(true))
+                                                        //.Window(w => w.OtherDistributionMethod(e => e.Close("onSync")))
+
+                                                        // .Pageable()
+                                                        .Sortable(sortable =>
+                                                        {
+                                                            sortable.SortMode(GridSortMode.SingleColumn);
+                                                        })
+                                                        .Filterable()
+
+                                                        //.Pageable(pageable => pageable
+                                                        //.Refresh(true)
+                                                        //// .PageSizes(true)
+                                                        //// .ButtonCount(20)
+                                                        //)
+                                                        .Scrollable()
+                                                        .AutoBind(false)
+                                                        .Events(events =>
+                                                        {
+                                                            events.DataBound("onDataBound").SaveChanges("onSaveChangesActivityGrid");//.Change("onDataBound");//.DataBinding("onDataBound");
+                                                            })
+                                                        .DataSource(dataSource => dataSource
+                                                        .Ajax()
+                                                        .AutoSync(false)
+
+                                                        //   .PageSize(5)
+                                                        .Sort(sort => sort.Add("Id").Descending())
+                                                        //.Model(model => model.Id(p => p.SponsorActivityId))
+                                                        //.Model(model => model.Field(p => p.SponsorId))
+                                                        //.Read(read => read.Action("DonorActivities_ReadById", "DonorActivity"))
+                                                        //// .Read(builder => builder.Url(@Request.Url.Scheme + "://" + @Request.Url.Authority + @Request.ApplicationPath.TrimEnd('/')  + "/DonorActivity/DonorActivities_ReadByID/" +  ViewData["Id"]).Type(HttpVerbs.Get))
+                                                        //.Events(events => events.Sync("onSync"))
+                                                        //.Create(create => create.Action("DonorActivities_Create", "DonorActivity"))
+                                                        //.Update(update => update.Action("DonorActivities_Update", "DonorActivity"))
+                                                        //.Destroy(destroy => destroy.Action("DonorActivities_Destroy", "DonorActivity"))
+                                                        //  .Group(groups => groups.Add(p => p.DonorName))
+                                                        )
+
+                        )
+
+                    </div>*@
+
+
+                @*<div id="sponsorGridDiv">
+                        <h4>Sponsorship</h4>
+                        <a class="k-button k-button-icontext" href="/Sponsor/Sponsors_CreateById"><span class="k-icon k-add"></span>Add Sponsorship</a>
+                        @(Html.Kendo().Grid<SponsorViewModel>()
+                                                                                                .Name("sponsorGrid")
+                                                                                                .HtmlAttributes(new { style = "width:710px; height:260px" })
+                                                                                                .Columns(columns =>
+                                                                                                {
+                                                                                                    columns.Bound(c => c.Id).Hidden(true);
+                                                                                                    columns.Bound(c => c.PersonId);
+
+                                                                                                    columns.Bound(c => c.SStartDate).Title("SStartDate").ClientTemplate("#= kendo.toString(SStartDate, 'G') #").Width(80);
+                                                                                                    columns.Bound(c => c.SEndDate).Title("SEndDate").ClientTemplate("#= kendo.toString(SEndDate, 'G') #").Width(80);
+                                                                                                    columns.Bound(c => c.NumberOfOrphans);
+                                                                                                    columns.Bound(c => c.OrphanGenderChoice);
+                                                                                                    columns.Bound(c => c.OrphanCityChoiceId);
+                                                                                                    columns.Bound(c => c.EthnicityId);
+                                                                                                    columns.Bound(c => c.ReferralType);
+                                                                                                    columns.Bound(c => c.Notes);
+                                                                                                    columns.Bound(c => c.LastUpdated).ClientTemplate("#= kendo.toString(LastUpdated, 'G') #").Width(80);
+
+                                                                                                    columns.Bound(c => c.LastUpdatedBy);
+
+
+                                                                                                        //  columns.Bound(c => c.IsActionRequired).ClientTemplate("#= (IsActionRequired!=null && IsActionRequired) ? 'Yes' : 'No' #").Title("Action?").Filterable(false).Width(70);
+                                                                                                        //  columns.Bound(c => c.Author).Width(120);
+                                                                                                        columns.Command(command => { command.Edit(); command.Destroy(); }).Width(180);
+                                                                                                })
+                                                                                                .ToolBar(toolbar =>
+                                                                                                {
+                                                                                                        //  toolbar.Create().Text("Add Sponsorship");
+                                                                                                    })
+                                                                                                //.ClientDetailTemplateID("templateY")
+                                                                                                .Editable(editable => editable.Mode(GridEditMode.PopUp).Window(w => w.Width(560).Draggable().Resizable().Modal(true)).DisplayDeleteConfirmation(true))
+                                                                                                //.Window(w => w.OtherDistributionMethod(e => e.Close("onSync")))
+
+                                                                                                // .Pageable()
+                                                                                                .Sortable(sortable =>
+                                                                                                {
+                                                                                                    sortable.SortMode(GridSortMode.SingleColumn);
+                                                                                                })
+                                                                                                .Filterable()
+
+                                                                                                //.Pageable(pageable => pageable
+                                                                                                //.Refresh(true)
+                                                                                                //// .PageSizes(true)
+                                                                                                //// .ButtonCount(20)
+                                                                                                //)
+                                                                                                .Scrollable()
+                                                                                                .AutoBind(false)
+                                                                                                .Events(events =>
+                                                                                                {
+                                                                                                    events.DataBound("onDataBound").SaveChanges("onSaveChangesActivityGrid");//.Change("onDataBound");//.DataBinding("onDataBound");
+                                                                                                    })
+                                                                                                .DataSource(dataSource => dataSource
+                                                                                                .Ajax()
+                                                                                                .AutoSync(false)
+                                                                                                 .Events(events => events.Error("sponsorGrid_Error"))
+                                                                                                //   .PageSize(5)
+                                                                                                .Sort(sort => sort.Add("SStartDate").Descending())
+                                                                                                  .Model(model =>
+                                                                                                  {
+                                                                                                      model.Id(e => e.Id);
+                                                                                                      model.Field(e => e.Id).Editable(false);
+                                                                                                          // model.Field(e => e.PersonId);
+
+                                                                                                      })
+                                                                                                //   .Model(model => model.Id(p => p.SponsorId))
+                                                                                                //  .Model(model => model.Field(p => p.SponsorId).Editable(false))
+                                                                                                // .Model(model => model.Field(p => p.Id))
+                                                                                                //,new { @id = Model.Id  }
+                                                                                                //  .Read(read => read.Action("Orders_ReadById", "Sponsor"))
+                                                                                                // .Read(builder => builder.Url(@Request.Url.Scheme + "://" + @Request.Url.Authority + @Request.ApplicationPath.TrimEnd('/')  + "/DonorActivity/DonorActivities_ReadByID/" +  ViewData["Id"]).Type(HttpVerbs.Get))
+                                                                                                //.Events(events => events.Sync("onSync"))
+                                                                                                .Create(create => create.Action("Sponsors_CreateById", "Sponsor"))
+                                                                                                .Update(update => update.Action("Sponsors_UpdateById", "Sponsor"))
+                                                                                                //.Destroy(destroy => destroy.Action("DonorActivities_Destroy", "DonorActivity"))
+                                                                                                //  .Group(groups => groups.Add(p => p.DonorName))
+                                                                                                )
+                                                                                                .ToClientTemplate()
+
+                        )
+
+                    </div>*@
+            </td>
+            <td><div style="width:30px"></div></td>
+            <td style="vertical-align:top;width:800px">
+
+
+                <div id="orphanGridDiv">
+                    <h5>Sponsorship</h5>
+
+                    <table>
+
+                        <tr>
+
+                            <td style="text-align: left; vertical-align: top">
+                                @Html.Label("Sponsor Start Date")
+                                @Html.EditorFor(model => model.SStartDate)
+                                @Html.ValidationMessageFor(model => model.SStartDate, "", new { @class = "text-danger" })
+                            </td>
+                            <td style="text-align: left; vertical-align: top">
+                                @Html.Label("Sponsor End Date")
+                                @Html.EditorFor(model => model.SEndDate)
+                                @Html.ValidationMessageFor(model => model.SEndDate, "", new { @class = "text-danger" })
+                            </td>
+                            <td style="text-align: left; vertical-align: top">
+                                @Html.Label("Required N# of Orphans")
+                                @Html.EditorFor(model => model.NumberOfOrphans)
+                                @Html.ValidationMessageFor(model => model.NumberOfOrphans, "", new { @class = "text-danger" })
+                            </td>
+                            <td style="text-align: left; vertical-align: top">
+                                @Html.Label("Orphan Gender Choice")<br />
+                                @Html.Kendo().DropDownListFor(m => m.OrphanGenderChoice).BindTo(Html.GetEnumSelectList(typeof(Gender)))
+                                @Html.ValidationMessageFor(model => model.OrphanGenderChoice, "", new { @class = "text-danger" })
+                            </td>
+                        </tr>
+
+                        <tr>
+
+                            <td style="text-align: left; vertical-align: top">
+                                @Html.Label("Orphan City Choice")<br />
+                                @Html.Kendo().DropDownListFor(m => m.OrphanCityChoiceId).BindTo(Html.GetEnumSelectList(typeof(CityEnum)))
+                                @Html.ValidationMessageFor(model => model.OrphanCityChoiceId, "", new { @class = "text-danger" })
+                            </td>
+                            <td style="text-align: left; vertical-align: top">
+                                @Html.Label("Prefered Ethnicity ")<br />
+                                @Html.Kendo().DropDownListFor(m => m.EthnicityId).BindTo(Html.GetEnumSelectList(typeof(Ethnicity)))
+                                @Html.ValidationMessageFor(model => model.EthnicityId, "", new { @class = "text-danger" })
+                            </td>
+                            <td style="text-align: left; vertical-align: top">
+                                @Html.Label("Referral type")<br />
+                                @Html.EditorFor(model => model.ReferralType)
+                                @Html.ValidationMessageFor(model => model.ReferralType, "", new { @class = "text-danger" })
+                            </td>
+                            <td style="text-align: left; vertical-align: top"></td>
+                        </tr>
+
+                    </table>
+                    <br />
+                    <table>
+                        <tr>
+                            <td style="text-align: left; vertical-align: top; width:300px">
+                                @Html.Label("Notes ")<br />
+                                @Html.TextAreaFor(model => model.Notes, new { style = "width: 100%;height:110px" })
+                                @Html.ValidationMessageFor(model => model.Notes, "", new { @class = "text-danger" })
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <br />
+                <div id="orphanGridDiv">
+
+                    @(Html.Kendo().ComboBox().Name("orphanComboBox")
+
+                            .Placeholder("Search or Select an Orphan")
+                            .DataTextField("Text")
+                            .DataValueField("Value")
+                            .HtmlAttributes(new { style = "width:350px;" })
+
+                  // .Events(ev => ev.Change("onChange_CountryId"))
+
+                  //   .Events(ev => ev.Change("onChange_OrphanId"))
+                  .Filter("contains")
+                    .AutoBind(true)
+                    .MinLength(0)
+//   .BindTo((IEnumerable<SelectListItem>)ViewData["OrphansSelectList"])
+.DataSource(source =>
+{
+                source.Read(read =>
+                {
+                    read.Action("ServerFiltering_GetOrphans", "Sponsor");
+                })
+                .ServerFiltering(true);
+})
+                    )
+
+
+                    @(Html.Kendo().Button()
+.Name("AssignNewOrphan")
+.Content("Assign a new Orphan")
+.HtmlAttributes(new { type = "button", style = "data-toggle: tooltip;data-placement:bottom", title = "Click + Update to refresh the grid" })
+.Events(ev => ev.Click("onClickAssignNewOrphan")))
+                    @*<button id="AssignNewOrphan" class="k-button k-button-icontext" type="submit" style="width: 100px; "><span class="k-icon k-i-add"></span>Assign a new Orphan</button>*@
+
+
+                    @(Html.Kendo().Grid<OrphanViewModel>()
+                                   .Name("orphanGrid")
+                                   .HtmlAttributes(new { style = "width:640px;height:240px" })
+                                   .Columns(columns =>
+                                   {
+                                       columns.Bound(c => c.Id).Width(60).Hidden(false);
+                                       columns.Bound(c => c.SponsorId).Hidden(true);
+                                       columns.Bound(c => c.Age).Width(60);
+                                       columns.Bound(c => c.ArGrandFather);
+                                       columns.Bound(c => c.ArFatherName);
+                                       columns.Bound(c => c.ArFirstName);
+                                       columns.Bound(c => c.SponsoredDate).ClientTemplate("#= kendo.toString(SponsoredDate, 'G') #");
+
+                                           //  columns.Bound(c => c.PostedDate).Title("Date").ClientTemplate("#= kendo.toString(PostedDate, 'G') #").Width(80);  .HtmlAttributes(new { @class = "k-state-dis/*abled" });*/
+                                           //  columns.Bound(c => c.Description);
+                                           //  columns.Bound(c => c.IsActionRequired).ClientTemplate("#= (IsActionRequired!=null && IsActionRequired) ? 'Yes' : 'No' #").Title("Action?").Filterable(false).Width(70);
+                                           //  columns.Bound(c => c.Author).Width(120);command.Edit();
+                                           columns.Command(command => { command.Destroy().Text("Remove"); });
+                                   })
+                                   //.ToolBar(toolbar =>
+                                   //{
+                                   //    toolbar.Create().Text("Assign new Orphan");//.HtmlAttributes(new { @class = "k-state-disabled" });.TemplateName("OrphanAssignViewModel")
+                                   //})
+                                   //.ClientDetailTemplateID("templateY")
+                                   //  .Editable(editable => editable.Mode(GridEditMode.PopUp).Window(w => w.Width(560).Draggable().Resizable().Modal(true)).DisplayDeleteConfirmation(true))
+                                   //.Window(w => w.OtherDistributionMethod(e => e.Close("onSync")))
+
+                                   //.Pageable()
+                                   //.Sortable(sortable =>
+                                   //{
+                                   //    sortable.SortMode(GridSortMode.SingleColumn);
+                                   //})
+                                   //.Filterable()
+
+                                   //.Pageable(pageable => pageable
+                                   //.Refresh(true)
+                                   //// .PageSizes(true)
+                                   //// .ButtonCount(20)
+                                   //)
+                                   .Scrollable()
+                                   .AutoBind(false)
+                                   .Events(events =>
+                                   {
+                                       events.DataBound("onOrphanDataBound").SaveChanges("onSaveChangesActivityGrid");//.Change("onDataBound");//.DataBinding("onDataBound");
+                                       })
+                                   .DataSource(dataSource => dataSource
+                                   .Ajax()
+                                   .AutoSync(true)
+
+                                   // .PageSize(10)
+                                   .Sort(sort => sort.Add("SponsoredDate").Descending())
+                                   .Model(model => model.Id(p => p.Id))
+                                   .Model(model => model.Field(p => p.SponsorId))
+                                   .Read(read => read.Action("Orphans_ReadById", "Orphan"))
+                                   //// .Read(builder => builder.Url(@Request.Url.Scheme + "://" + @Request.Url.Authority + @Request.ApplicationPath.TrimEnd('/')  + "/DonorActivity/DonorActivities_ReadByID/" +  ViewData["Id"]).Type(HttpVerbs.Get))
+                                   .Events(events => events.Sync("onSyncOrphanGrid"))
+                                   //  .Create(create => create.Action("Orphans_AssignToSponsor", "Orphan"))
+                                   //.Update(update => update.Action("DonorActivities_Update", "DonorActivity"))
+                                   .Destroy(destroy => destroy.Action("Orphans_RemoveFromSponsor", "Orphan"))
+                                   //  .Group(groups => groups.Add(p => p.DonorName))
+                                   ).ToClientTemplate()
+
+                    )
+
+                </div>
+
+                <br />
+
+                <div id="activityGridDiv">
+                    <h5>Sponsorship Activity</h5>
+
+                    @(Html.Kendo().Button().Enable(true)
+                                                  .Name("AddSponsorActivity")
+                                                  .Content("Add Sponsor Activity")
+                                                  .HtmlAttributes(new { type = "button", style = "data-toggle: tooltip;data-placement:bottom", title = "Click + Update to refresh the grid" })
+                                                  .Events(ev => ev.Click("onClickAddSponsorActivity")))
+
+
+                    @(Html.Kendo().Grid<SponsorActivityViewModel>()
+.Name("sponsorActivitiesGrid")
+.HtmlAttributes(new { style = "width:650px;" })
+.Columns(columns =>
+{
+columns.Bound(o => o.PostedDate).Width(130).Format("{0:dd/MM/yyyy HH:mm:ss}");
+columns.Bound(o => o.ActivityName).Title("Subject").Width(200);
+columns.Bound(o => o.Description).Title("Description");
+columns.Bound(o => o.Author).Title("Written by").Width(200).Hidden(true);
+
+columns.Command(command =>
+                                {
+                            command.Edit().Text("<span class='command'>Edit</span>");//.HtmlAttributes(new { @class = "k-state-disabled" });
+                                command.Destroy().Text("<span class='command'>Delete</span>");//.HtmlAttributes(new { @class = "k-state-disabled" });
+                            }).Width(170);
+})
+.Editable(editable => editable.Mode(GridEditMode.PopUp))
+//.ToolBar(toolbar => toolbar.Create())//.HtmlAttributes(new { @class = "k-state-disabled" }))
+.Resizable(resize => resize.Columns(true))
+.DataSource(dataSource => dataSource
+.Ajax()
+.Sort(sort => sort.Add("Id").Descending())
+
+.Read(builder => builder.Action("SponsorActivity_ReadById", "Sponsor", new { id = "${Id}" }))
+// " + Model.Id).Type(HttpVerbs.Get))
+.Create(builder => builder.Action("SponsorActivity_CreateById", "Sponsor", new { id = "${Id}" })) //+ "/OrphansApi/CreateOrphanActivity/" + Model.Id).Type(HttpVerbs.Put))
+.Update(builder => builder.Action("SponsorActivity_UpdateById", "Sponsor", new { id = "${Id}" }).Type(HttpVerbs.Post))
+.Destroy(builder => builder.Action("SponsorActivity_DestroyById", "Sponsor", new { id = "${Id}" }).Type(HttpVerbs.Delete))
+
+                                                                                        .Model(model =>
+                                                                                        {
+                                                                                            model.Id("Id");
+                                                                                            model.Field(m => m.SponsorId);
+                                                                                        })
+                                                                                        //   .Events(events => events.Sync("onSyncorphanActivitiesGrid"))
+                                                                                        .ServerOperation(false)
+                                                                                        ).ToClientTemplate()
+                    )
+                </div>
+
+
+
+
+
+
+            </td>
+
+
+        </tr>
+    </table>
+
+</div>
