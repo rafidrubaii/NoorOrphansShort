@@ -343,7 +343,7 @@ namespace NoorTrust.DonationFund.WebUI.Controllers
         //        catch (Exception ex)
         //        {
 
-        //            Console.WriteLine(ex);
+        //            ErrorSignal.FromCurrentContext().Raise(ex);
         //        }
         //        //db.Entry(entity).State = EntityState.Modified;
         //        //db.SaveChanges();
@@ -369,7 +369,7 @@ namespace NoorTrust.DonationFund.WebUI.Controllers
                 catch (Exception ex)
                 {
 
-                    Console.WriteLine(ex);
+                    ErrorSignal.FromCurrentContext().Raise(ex);
                 }
                 // db.Sponsors.Remove(entity);
                 // db.SaveChanges();

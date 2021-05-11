@@ -178,7 +178,7 @@ namespace NoorTrust.DonationFund.WebUI
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine(ex);
+                        ErrorSignal.FromCurrentContext().Raise(ex);
 
                     }
                 }
@@ -191,7 +191,7 @@ namespace NoorTrust.DonationFund.WebUI
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine(ex);
+                        ErrorSignal.FromCurrentContext().Raise(ex);
 
 
                     }

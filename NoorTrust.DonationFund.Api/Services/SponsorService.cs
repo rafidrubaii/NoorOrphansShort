@@ -46,7 +46,7 @@ namespace NoorTrust.DonationFund.Api.Services
             catch (Exception ex)
             {
 
-                Console.WriteLine(ex);
+                ErrorSignal.FromCurrentContext().Raise(ex);
             }
 
 
@@ -67,7 +67,7 @@ namespace NoorTrust.DonationFund.Api.Services
             catch (Exception ex)
             {
 
-                Console.WriteLine(ex);
+                ErrorSignal.FromCurrentContext().Raise(ex);
             }
 
 

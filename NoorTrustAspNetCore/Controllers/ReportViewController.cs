@@ -122,7 +122,7 @@ namespace NoorTrust.DonationFund.WebUI.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                ErrorSignal.FromCurrentContext().Raise(ex);
 
 
             }

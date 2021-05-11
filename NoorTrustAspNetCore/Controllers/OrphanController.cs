@@ -33,16 +33,13 @@ namespace NoorTrust.DonationFund.WebUI.Controllers
     // [Authorize(Roles = SecurityConstants.RoleName_Admin)]
     public class OrphanController : Controller
     {
-        //  readonly NoorTrustDbContext db = new NoorTrustDbContext((new DbContextOptions()).IsFrozen);
-
-        // IRepository<Orphan> _RepositoryInstance;
+     
         private const int ID_FOR_CREATE_NEW_PRESIDENT = 0;
         private IOrphanService _OrphanService;
         private IReportService _ReportService;
 
         private ILogger _Log;
-        // private IValidatorStrategy<President> _Validator;
-        // private ITestDataUtility _TestDataUtility;
+     
         public IHostingEnvironment _HostingEnvironment { get; set; }
 
 
@@ -50,25 +47,18 @@ namespace NoorTrust.DonationFund.WebUI.Controllers
             IReportService ReportService,
             ILogger Log,
             IHostingEnvironment hostingEnvironment
-            //, IValidatorStrategy<President> validator
-            //  ITestDataUtility testDataUtility
+          
             )
         {
             if (Service == null)
                 throw new ArgumentNullException("service", "service is null.");
 
-            //if (validator == null)
-            //{
-            //    throw new ArgumentNullException("validator", "Argument cannot be null.");
-            //}
-
-            //  _Validator = validator;
             _OrphanService = Service;
             _ReportService = ReportService;
             _Log = Log;
             _HostingEnvironment = hostingEnvironment;
 
-            //  _TestDataUtility = testDataUtility;
+         
         }
         public IActionResult Index()
         {
@@ -105,8 +95,6 @@ namespace NoorTrust.DonationFund.WebUI.Controllers
                 var filename = dic.Keys.First();
                 var foldername = dic.Values.First();
 
-                // return RedirectToAction("OrphanCards", "ReportView", new { orphanList = list });
-                //DisplayReport/?filename=#:ReportFiles[i].ReportFileName#&fname=#:FolderName#&list=All" filename =ReportFiles[i].ReportFileName,fname=FolderName,
                 return RedirectToAction("DisplayReport", "ReportView", new { filename = filename, fname = foldername, list = list });
 
 
@@ -124,32 +112,17 @@ namespace NoorTrust.DonationFund.WebUI.Controllers
                 items.Add(new SelectListItem { Value = p.Id.ToString(), Text = p.ReportName });
             }
             IEnumerable<SelectListItem> iitems = items;
-            //ViewBag.Projects = projects;
-            //new code below
+         
             var selectList = new SelectList(iitems, "Value", "Text");
             //  ViewBag.SelectedReport = selectList;
             ViewData["SelectedReport"] = selectList;
-            // viewDataDictionary.Add("DonorsSelectList", DonersSelectList);//.ToList().AsEnumerable()
-
-            //List<SelectListItem> yesnoSelectList = new List<SelectListItem>()  {
-            //                        //new SelectListItem {Text = "Unknown", Value = "null"},
-            //                        new SelectListItem {Text = "Yes", Value = "true"},
-            //                        new SelectListItem {Text = "No", Value = "false"} };
-
-            //viewDataDictionary.Add("YesNoSelectList", yesnoSelectList);
+          
         }
         public async Task<IActionResult> Orphans_ReadAsync([DataSourceRequest]DataSourceRequest request)
         {
             DataSourceResult result = null;
             try
             {
-
-                //var files = _OrphanService.GetOrphanFiles().Select(ct => new SelectListItem//'.Select(ct => new SelectListItem
-                //{
-                //    Text = ct.FileName.ToString(),
-                //    Value = ct.Id.ToString(),
-                //    Selected = false,
-                //}).ToList();//.toList();
 
                 var orphans = await _OrphanService.GetOrphansAsync();
                 result = orphans.ToDataSourceResult(request, orphan => new OrphanViewModel
@@ -223,26 +196,15 @@ namespace NoorTrust.DonationFund.WebUI.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                ErrorSignal.FromCurrentContext().Raise(ex);
 
             }
             return Json(result);
         }
 
-        //private async Task<IList<OrphanFile>> GenerateOrphanFileList(int id)
-        //{
-        //    //if ((!id.HasValue) || (id == null))
-        //    //    return new List<GifAidFormFile>();
-
-        //    var result = await _Service.GetOrphanFilesAsync();//.Where(x => x.OrphanId == id).ToList();
-
-        //    return (result == null) ? new List<OrphanFile>() : result;
-        //}
+      
         private IList<OrphanFile> GenerateOrphanFileList(int id)
         {
-            //if ((!id.HasValue) || (id == null))
-            //    return new List<GifAidFormFile>();
-
             var result = _OrphanService.GetOrphanFiles(id);//.Where(x => x.OrphanId == id).ToList();
 
             return (result == null) ? new List<OrphanFile>() : result;
@@ -322,13 +284,6 @@ namespace NoorTrust.DonationFund.WebUI.Controllers
 
 
 
-        //[AllowAnonymous]
-        //public ActionResult Index()
-        //{
-        //    var presidents = _Service.GetOrphans();
-
-        //    return View();// presidents);
-        //}
         public ActionResult Orders_Read([DataSourceRequest]DataSourceRequest request)
         {
             var result = Enumerable.Range(0, 50).Select(i => new DisplayViewModel
@@ -484,7 +439,7 @@ namespace NoorTrust.DonationFund.WebUI.Controllers
                 catch (Exception ex)
                 {
 
-                    Console.WriteLine(ex);
+                    ErrorSignal.FromCurrentContext().Raise(ex);
                 }
             }
 
@@ -586,7 +541,7 @@ namespace NoorTrust.DonationFund.WebUI.Controllers
                 catch (Exception ex)
                 {
 
-                    Console.WriteLine(ex);
+                    ErrorSignal.FromCurrentContext().Raise(ex);
                 }
             }
 
@@ -677,7 +632,7 @@ namespace NoorTrust.DonationFund.WebUI.Controllers
                 catch (Exception ex)
                 {
 
-                    Console.WriteLine(ex);
+                    ErrorSignal.FromCurrentContext().Raise(ex);
                 }
             }
 
@@ -745,7 +700,7 @@ namespace NoorTrust.DonationFund.WebUI.Controllers
                 catch (Exception ex)
                 {
 
-                    Console.WriteLine(ex);
+                    ErrorSignal.FromCurrentContext().Raise(ex);
                 }
             }
 
@@ -803,7 +758,7 @@ namespace NoorTrust.DonationFund.WebUI.Controllers
                 catch (Exception ex)
                 {
 
-                    Console.WriteLine(ex);
+                    ErrorSignal.FromCurrentContext().Raise(ex);
                 }
                 // db.Sponsors.Remove(entity);
                 // db.SaveChanges();
@@ -1030,7 +985,7 @@ namespace NoorTrust.DonationFund.WebUI.Controllers
 
                     catch (Exception ex)
                     {
-                        Console.WriteLine(ex);
+                        ErrorSignal.FromCurrentContext().Raise(ex);
                     }
                 }
             }
